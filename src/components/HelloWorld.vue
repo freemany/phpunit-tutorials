@@ -5,14 +5,15 @@
       <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" id="code">
       </div>
     </div>
-    <button @click="prev">prev</button><button @click="next">next</button>
+    <button @click="prev">prev</button>{{index + 1}} of {{total}}<button @click="next">next</button>
   </div>
   </template>
 
 <script>
-import config from '@/config/slideshow.js';
+import config from '@/config/slideshow';
+import hljs from 'highlightjs';
+import {getProgressPageIndex, setProgressPageIndex} from '@/lib/localstorage';
 
-let index = 0;
 
 export default {
   name: 'HelloWorld',
@@ -21,36 +22,43 @@ export default {
   },
   data() {
       return {
+          total: 0,
           index: 0,
-          content: config[index].content
+          content: null,
       }
+  },
+  created() {
+      this.total = config.length;
+      this.index = getProgressPageIndex();
+      this.content = config[this.index].content;
   },
   mounted() {
     this.initCode();
   },
   methods: {
       initCode() {
-          $('#code').find('code').each(function() {
-              hljs.highlightBlock(this);
-              // hljs.highlightAuto($(this).text(), {language: 'php'});
+          this.$refs.slideContent.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
           });
       },
       next() {
-          if (index === config.length - 1) {
+          if (this.index === this.total - 1) {
               return;
           }
-          index ++;
-          this.content = config[index].content;
+          this.index ++;
+          setProgressPageIndex(this.index);
+          this.content = config[this.index].content;
           this.$nextTick(() => {
               this.initCode();
           });
       },
       prev() {
-          if (index === 0) {
+          if (this.index === 0) {
               return;
           }
-          index --;
-          this.content = config[index].content;
+          this.index --;
+          setProgressPageIndex(this.index);
+          this.content = config[this.index].content;
           this.$nextTick(() => {
               this.initCode();
           });
@@ -61,7 +69,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#code {
+.jumbotron {
   text-align: left;
 }
 ul {
