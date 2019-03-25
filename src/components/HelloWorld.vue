@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <h5>Tutorial</h5>
-      <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" id="code">
+      <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" ref="slideContent">
       </div>
     </div>
     <button @click="prev">prev</button><button @click="next">next</button>
@@ -11,6 +11,7 @@
 
 <script>
 import config from '@/config/slideshow.js';
+import hljs from 'highlightjs';
 
 let index = 0;
 
@@ -30,9 +31,8 @@ export default {
   },
   methods: {
       initCode() {
-          $('#code').find('code').each(function() {
-              hljs.highlightBlock(this);
-              // hljs.highlightAuto($(this).text(), {language: 'php'});
+          this.$refs.slideContent.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
           });
       },
       next() {
@@ -61,7 +61,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#code {
+.jumbotron {
   text-align: left;
 }
 ul {
