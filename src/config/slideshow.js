@@ -2,6 +2,9 @@ export default [
     {
         content: `
 <h5>Code here:</h5>
+<pre><code class="bash">
+$ checkout master
+</code></pre>
 <pre><code clas="php">
 class Person
 {
@@ -10,7 +13,7 @@ class Person
      */
     public function push()
     {
-        return false;
+        return true;
     }
 } 
 </code></pre>       
@@ -26,7 +29,7 @@ class PersonTest extends TestCase
      {
          $person = new Person();
 
-         $this->assertFalse($person->push());
+         $this->assertTrue($person->push());
      }
 }
 </code></pre>       
