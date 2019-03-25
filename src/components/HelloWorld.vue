@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <h5>Master</h5>
-      <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" id="code">
+      <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" ref="slideContent">
       </div>
     </div>
     <button @click="prev">prev</button>{{index + 1}} of {{total}}<button @click="next">next</button>
