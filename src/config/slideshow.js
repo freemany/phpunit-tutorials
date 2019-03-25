@@ -10,7 +10,7 @@ class Person
      */
     public function push()
     {
-        return true;
+        return false;
     }
 } 
 </code></pre>       
@@ -26,7 +26,7 @@ class PersonTest extends TestCase
      {
          $person = new Person();
 
-         $this->assertTrue($person->push());
+         $this->assertFalse($person->push());
      }
 }
 </code></pre>       
