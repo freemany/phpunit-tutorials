@@ -10,7 +10,7 @@
   </template>
 
 <script>
-import config from '@/config/slideshow';
+import config from '@/config/slideshow.html';
 import hljs from 'highlightjs';
 import {getProgressPageIndex, setProgressPageIndex} from '@/lib/localstorage';
 
@@ -30,7 +30,7 @@ export default {
   created() {
       this.total = config.length;
       this.index = getProgressPageIndex();
-      this.content = config[this.index].content;
+      this.content = config[this.index];
   },
   mounted() {
     this.initCode();
@@ -47,7 +47,7 @@ export default {
           }
           this.index ++;
           setProgressPageIndex(this.index);
-          this.content = config[this.index].content;
+          this.content = config[this.index];
           this.$nextTick(() => {
               this.initCode();
           });
@@ -58,7 +58,7 @@ export default {
           }
           this.index --;
           setProgressPageIndex(this.index);
-          this.content = config[this.index].content;
+          this.content = config[this.index];
           this.$nextTick(() => {
               this.initCode();
           });
