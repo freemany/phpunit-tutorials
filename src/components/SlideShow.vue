@@ -25,6 +25,7 @@ export default {
           total: 0,
           index: 0,
           content: null,
+          fadeInAction: false,
       }
   },
   created() {
@@ -68,11 +69,15 @@ export default {
           this._goPage();
       },
       _goPage() {
+          this.fadeInAction = true;
           setProgressPageIndex(this.index);
           this.content = config[this.index];
           this.$nextTick(() => {
               this.initCode();
           });
+          setTimeout(() => {
+              this.fadeInAction = false;
+          }, 900);
       }
   }
 }
@@ -95,5 +100,19 @@ li {
 }
 a {
   color: #42b983;
+}
+.fade-in {
+    animation: fadein 2s;
+    -moz-animation: fadein 2s; /* Firefox */
+    -webkit-animation: fadein 2s; /* Safari and Chrome */
+    -o-animation: fadein 2s; /* Opera */
+}
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
 }
 </style>
