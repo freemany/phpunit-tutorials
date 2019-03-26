@@ -10,6 +10,47 @@ $ php composer.phar install
 $ php vendor/bin/phpunit 
 </code></pre>
 `,`
+<p>Here are the sameple tests:</p>
+<pre><code class="php">
+namespace App\\Test\\TestCase;
+
+use PHPUnit\\Framework\\TestCase;
+
+/**
+ * Class SampleTest
+ *
+ * @package App\Test\TestCase
+ */
+class SampleTest extends TestCase
+{
+    public function testValid()
+    {
+        $this->assertTrue(true);
+    }
+
+    public function testException()
+    {
+        $message = 'exception message' . rand();
+
+        $this->expectException(\\InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+
+        throw new \\InvalidArgumentException($message);
+    }
+}
+</code></pre>
+<p>You will see the test result:</p>
+<pre><code class="bash">
+$ php vendor/bin/phpunit
+PHPUnit 7.5.7 by Sebastian Bergmann and contributors.
+
+..                                                                  2 / 2 (100%)
+
+Time: 23 ms, Memory: 4.00 MB
+
+<span class="bg-green">OK (2 tests, 3 assertions)</span>
+</code></pre>
+`,`
 <h4>Testable testable and testable</h4>
 <p>The most important element for unit test is to have a testable code first, without testable, there is no way or no point to test because it will
 involves too much resources for the no-ready-for-test/none-testable codes. In order to write testable codes, in PHP we have to embrace the OOP patterns which sticks

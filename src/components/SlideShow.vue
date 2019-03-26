@@ -6,6 +6,7 @@
       </div>
     </div>
     <button class="btn btn-primary" @click="prev"><i class="fas fa-angle-left"></i></button> {{index + 1}} of {{total}}  <button class="btn btn-primary" @click="next"><i class="fas fa-angle-right"></i></button>
+     <div class="text-center">(You can click Left/Right arrow buttons to navigate)</div>
   </div>
   </template>
 
@@ -84,7 +85,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .jumbotron {
   text-align: left;
   height: 500px;
@@ -114,5 +115,9 @@ a {
     to {
         opacity:1;
     }
+}
+.bg-green {
+    background-color: #71dd8a;
+    color: white;
 }
 </style>
