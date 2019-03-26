@@ -102,14 +102,14 @@ a {
   color: #42b983;
 }
 .fade-in {
-    animation: fadein 2s;
-    -moz-animation: fadein 2s; /* Firefox */
-    -webkit-animation: fadein 2s; /* Safari and Chrome */
-    -o-animation: fadein 2s; /* Opera */
+    animation: fadein 1.5s;
+    -moz-animation: fadein 1.5s; /* Firefox */
+    -webkit-animation: fadein 1.5s; /* Safari and Chrome */
+    -o-animation: fadein 1.5s; /* Opera */
 }
 @keyframes fadein {
     from {
-        opacity:0;
+        opacity:0.6;
     }
     to {
         opacity:1;
