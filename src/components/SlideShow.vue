@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <h5>Tutorial</h5>
+      <h5>Tutorial 1</h5>
       <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" ref="slideContent">
       </div>
     </div>
@@ -10,7 +10,7 @@
   </template>
 
 <script>
-import config from '@/config/slideshow';
+import config from '@/config/slideshow.html';
 import hljs from 'highlightjs';
 import {getProgressPageIndex, setProgressPageIndex} from '@/lib/localstorage';
 
@@ -30,7 +30,7 @@ export default {
   created() {
       this.total = config.length;
       this.index = getProgressPageIndex();
-      this.content = config[this.index].content;
+      this.content = config[this.index];
   },
   mounted() {
     this.initCode();
@@ -46,23 +46,22 @@ export default {
               return;
           }
           this.index ++;
-          setProgressPageIndex(this.index);
-          this.content = config[this.index].content;
-          this.$nextTick(() => {
-              this.initCode();
-          });
+          this._goPage();
       },
       prev() {
           if (this.index === 0) {
               return;
           }
           this.index --;
+          this._goPage();
+      },
+      _goPage() {
           setProgressPageIndex(this.index);
-          this.content = config[this.index].content;
+          this.content = config[this.index];
           this.$nextTick(() => {
               this.initCode();
           });
-      },
+      }
   }
 }
 </script>
