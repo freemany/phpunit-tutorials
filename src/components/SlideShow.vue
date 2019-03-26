@@ -71,7 +71,7 @@ export default {
 <style scoped>
 .jumbotron {
   text-align: left;
-  height: 600px;
+  height: 500px;
   overflow-y: scroll;
 }
 ul {
