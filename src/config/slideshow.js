@@ -1,24 +1,17 @@
 export default [
     {
         content: `
-<h5>Code here:</h5>
+<h5>Install npm dependencies and phpunit:</h5>
 <pre><code class="bash">
-$ checkout master
+$ npm i
+$ php composer.phar install
 </code></pre>
-<pre><code clas="php">
-class Person
-{
-    /**
-     * @return bool
-     */
-    public function push()
-    {
-        return true;
-    }
-} 
-</code></pre>       
+<p>Once they are installed, you should be able to run the first test</p>
+<pre><code clas="bash">
+$ php vendor/bin/phpunit 
+</code></pre>
 `
-    }, // 0
+    },
     {
         content: `
 <h5>Code here:</h5>

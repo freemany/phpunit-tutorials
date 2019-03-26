@@ -5,7 +5,7 @@
       <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" ref="slideContent">
       </div>
     </div>
-    <button class="btn btn-primary" @click="prev"><i class="fas fa-angle-left"></i></button> {{index + 1}} of {{total}} <button class="btn btn-primary" @click="next"><i class="fas fa-angle-right"></i></button>
+    <button class="btn btn-primary" @click="prev"><i class="fas fa-angle-left"></i></button> {{index + 1}} of {{total}}  <button class="btn btn-primary" @click="next"><i class="fas fa-angle-right"></i></button>
   </div>
   </template>
 
@@ -71,6 +71,8 @@ export default {
 <style scoped>
 .jumbotron {
   text-align: left;
+  height: 600px;
+  overflow-y: scroll;
 }
 ul {
   list-style-type: none;
