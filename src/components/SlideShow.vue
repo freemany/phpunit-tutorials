@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <h5>Master</h5>
-      <div class="jumbotron p-3 p-md-5 rounded ol-md-6 px-0" v-html="content" ref="slideContent">
+      <div :class="'jumbotron p-3 p-md-5 rounded ol-md-6 px-0 ' + (fadeInAction ? 'fade-in' : '')" v-html="content" ref="slideContent">
       </div>
     </div>
     <button class="btn btn-primary" @click="prev"><i class="fas fa-angle-left"></i></button> {{index + 1}} of {{total}}  <button class="btn btn-primary" @click="next"><i class="fas fa-angle-right"></i></button>
@@ -25,6 +25,7 @@ export default {
           total: 0,
           index: 0,
           content: null,
+          fadeInAction: false,
       }
   },
   created() {
@@ -68,11 +69,15 @@ export default {
           this._goPage();
       },
       _goPage() {
+          this.fadeInAction = true;
           setProgressPageIndex(this.index);
           this.content = config[this.index];
           this.$nextTick(() => {
               this.initCode();
           });
+          setTimeout(() => {
+              this.fadeInAction = false;
+          }, 900);
       }
   }
 }
@@ -95,5 +100,19 @@ li {
 }
 a {
   color: #42b983;
+}
+.fade-in {
+    animation: fadein 2s;
+    -moz-animation: fadein 2s; /* Firefox */
+    -webkit-animation: fadein 2s; /* Safari and Chrome */
+    -o-animation: fadein 2s; /* Opera */
+}
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
 }
 </style>
