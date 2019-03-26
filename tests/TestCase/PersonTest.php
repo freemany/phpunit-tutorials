@@ -11,6 +11,15 @@ class PersonTest extends TestCase
      {
          $person = new Person();
 
-         $this->assertFalse($person->push());
+         $this->assertFalse($person->push(1));
+     }
+
+     public function testException()
+     {
+         $this->expectException(\InvalidArgumentException::class);
+         $this->expectExceptionMessage('hei wrong');
+
+         $person = new Person();
+         $person->push('freeman');
      }
 }

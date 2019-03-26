@@ -33,6 +33,18 @@ export default {
       this.content = config[this.index];
   },
   mounted() {
+      document.addEventListener('keydown', (event) => {
+          switch(event.keyCode) {
+              case 37:
+                  this.prev();
+                  break;
+              case 39:
+                  this.next();
+                  break;
+              default:
+                  break;
+          }
+      });
     this.initCode();
   },
   methods: {
