@@ -16,7 +16,7 @@ import {getProgressPageIndex, setProgressPageIndex} from '@/lib/localstorage';
 
 
 export default {
-  name: 'HelloWorld',
+  name: 'SlideShow',
   props: {
     msg: String
   },
