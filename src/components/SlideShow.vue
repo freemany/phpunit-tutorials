@@ -46,23 +46,22 @@ export default {
               return;
           }
           this.index ++;
-          setProgressPageIndex(this.index);
-          this.content = config[this.index];
-          this.$nextTick(() => {
-              this.initCode();
-          });
+          this._goPage();
       },
       prev() {
           if (this.index === 0) {
               return;
           }
           this.index --;
+          this._goPage();
+      },
+      _goPage() {
           setProgressPageIndex(this.index);
           this.content = config[this.index];
           this.$nextTick(() => {
               this.initCode();
           });
-      },
+      }
   }
 }
 </script>
