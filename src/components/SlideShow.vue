@@ -28,7 +28,6 @@ export default {
       }
   },
   created() {
-
       this.total = config.length;
       this.index = getProgressPageIndex();
       this.content = config[this.index];
