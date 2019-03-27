@@ -1,3 +1,3 @@
 export default {
-    store_key: 'phpunit-tutorial-1',
+    store_key: 'phpunit-tutorial-2',
 }

@@ -14,7 +14,7 @@ class CartTest extends TestCase
      {
          $name = 'foo';
          $expected = $name . ' is moving';
-         $cart = new Cart($name);
+         $cart = new Cart($name, 123);
 
          $this->assertSame($expected, $cart->move());
      }

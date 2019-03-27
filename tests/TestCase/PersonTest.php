@@ -11,35 +11,53 @@ class PersonTest extends TestCase
 {
     /**
      * @group person
+     * @dataProvider pushTestDataProvider
+     * @param string      $moveResponse
+     * @param int         $carWeight
+     * @param int         $personStrenght
+     * @param null|string $expected
      */
-    public function testPushWithMockBuilder()
+    public function testPushWithMockBuilder(string $moveResponse, int $carWeight, int $personStrenght, ?string $expected)
     {
-        $expected = 'i am moving';
-
         $cart = $this->getMockBuilder(Cart::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $cart->expects($this->once())
+                     ->disableOriginalConstructor()
+                     ->getMock();
+        $cart->expects($this->any())
              ->method('move')
-             ->willReturn($expected);
+             ->willReturn($moveResponse);
+        $cart->expects($this->any())
+            ->method('getWeight')
+            ->willReturn($carWeight);
 
-        $person = new Person();
+        $person = new Person('foo', $personStrenght);
 
-        $this->assertSame($expected, $person->push($cart)); // assertEquals without type check
+        $this->assertSame($expected, $person->push($cart));
     }
 
     /**
      * @group person
+     * @dataProvider pushTestDataProvider
+     * @param string      $moveResponse
+     * @param int         $carWeight
+     * @param int         $personStrenght
+     * @param null|string $expected
      */
-    public function testPushWithMock()
+    public function testPushWithMock(string $moveResponse, int $carWeight, int $personStrenght, ?string $expected)
     {
-        $expected = 'i am moving';
+        $cart = new CartMock('foo', $carWeight);
+        $cart->setResult($moveResponse);
 
-        $cart = new CartMock('name');
-        $cart->setResult($expected);
-
-        $person = new Person();
+        $person = new Person('bar', $personStrenght);
 
         $this->assertSame($expected, $person->push($cart));
+    }
+
+    public function pushTestDataProvider()
+    {
+        return [
+            ['moving', 1, 2, 'moving'],
+            ['moving', 1, 1, 'moving'],
+            ['moving', 2, 1, null],
+        ];
     }
 }
