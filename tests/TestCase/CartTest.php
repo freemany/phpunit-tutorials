@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class CartTest extends TestCase
 {
+    /**
+     * @group cart
+     */
      public function testMove()
      {
          $name = 'foo';

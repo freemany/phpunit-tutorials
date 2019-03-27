@@ -4,5 +4,5 @@ namespace App\Motion;
 
 interface MotionInterface
 {
-    public function move();
+    public function move(): string;
 }

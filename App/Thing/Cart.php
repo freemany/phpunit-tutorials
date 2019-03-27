@@ -9,7 +9,7 @@ use App\Motion\MotionInterface;
  *
  * @package App\Thing
  */
-class Cart implements MotionInterface
+class Cart extends Thing implements MotionInterface
 {
     protected $name;
 
@@ -18,7 +18,7 @@ class Cart implements MotionInterface
         $this->name = $name;
     }
 
-    public function move()
+    public function move(): string
     {
         $result = $this->name . ' is moving';
         return $result;
