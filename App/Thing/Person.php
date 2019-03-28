@@ -5,7 +5,7 @@ namespace App\Thing;
 use App\Action\ActionInterface;
 use App\Motion\MotionInterface;
 
-class Person implements ActionInterface
+class Person extends Thing implements ActionInterface
 {
     /**
      * @param Thing $object

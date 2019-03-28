@@ -1,34 +1,47 @@
 export default [` <!-- page 1 -->
-<p>In the coming tutorials, we are going to build some php objects to simulate a situation:</p>
-<h5>A person push a Cart.</h5>
+<p>In the coming tutorials, we are going to build some php objects to simulate the real world:</p>
+<h5>A Person Push a Cart</h5>
 <p>At the same time, you write test cases to test what you have just built for TDD</p>
-<p>In my opinion and what I saw, it is totally up to you to start write a test case first or later after the methods being built. It is
-completely ok and up to yuor personal taste.</p>
+<p>In my opinion and what I experienced, it is totally up to you to start write a test case first or later after a class/method being built. It is
+completely ok and up to your personal taste.</p>
 `,
 
 
 ` <!-- page 2 -->
 <p>We going to have a Cart, why we have Cart first is because it is an object and dependent on a Person later </p>
+<p>However, no mater a cart or a person, they both are a kind of Object in the world, I call it Thing here because
+it will be confused to have a object called Object in the codes. So both car and person will extend from this base, Thing</p>
 <pre><code class="php">
-/**
- * Class Cart
- *
- * @package App\Thing
- */
-class Cart implements MotionInterface
+abstract class Thing
 {
     protected $name;
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
+}
+</code></pre>
+`,
 
-    public function move()
+
+` <!-- page 3 -->
+<p>Now we have a Cart based on Thing</p>
+<pre><code class="php">
+class Cart extends Thing implements MotionInterface
+{
+    public function move(): string
     {
         $result = $this->name . ' is moving';
         return $result;
     }
+}
+</code></pre>
+<p>Because a cart can move, so it implements MotionInterface.</p>
+<pre><code class="php">
+interface MotionInterface
+{
+    public function move(): string;
 }
 </code></pre>
 <p>Test case for the method 'move'</p>
@@ -41,6 +54,7 @@ class CartTest extends TestCase
          $expected = $name . ' is moving';
          $cart = new Cart($name);
 
+         // you can use assertEquals here too, assertSame has type check as well and you need it for array comparision
          $this->assertSame($expected, $cart->move());
      }
 }
@@ -60,43 +74,119 @@ Time: 70 ms, Memory: 4.00 MB
 
 
 
-` <!-- page 3 -->
+` <!-- page 4 -->
 <h5>Lets have a Person class now</h5>
 <pre><code class="php">
-class PersonTest extends TestCase
+class Person extends Thing implements ActionInterface
 {
-     public function testPush()
-     {
-         $person = new Person();
+    /**
+     * @param Thing $object
+     *
+     * @return null|string
+     */
+    public function push(Thing $object): ?string
+    {
+        if ($object instanceof MotionInterface) {
 
-         $this->assertFalse($person->push());
-     }
+            return $object->move();
+        }
+
+        return null;
+    }
 }
-</code></pre>       
-`,` <!-- page 4 -->
-<h5>Code here: 3</h5>
+</code></pre>
+<p>A person can action, so the Person implements ActionInterface</p>
 <pre><code class="php">
-class PersonTest extends TestCase
+interface ActionInterface
 {
-     public function testPush()
-     {
-         $person = new Person();
-
-         $this->assertFalse($person->push());
-     }
+    public function push(Thing $object): ?string;
 }
-</code></pre>       
-`,` <!-- page 4 -->
-<h5>Code here: 4</h5>
+</code></pre>`
+,
+
+`
+<p>Lets write the test for person to test the push method</p>
 <pre><code class="php">
-class PersonTest extends TestCase
-{
-     public function testPush()
-     {
-         $person = new Person();
+   /**
+    * @group person
+    */
+    public function testPushWithMockBuilder()
+    {
+        $expected = 'expected' . rand();
 
-         $this->assertFalse($person->push());
+        $cart = $this->getMockBuilder(Cart::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+        $cart->expects($this->once())
+             ->method('move')
+             ->willReturn($expected);
+
+        $person = new Person('foo');
+
+        $this->assertSame($expected, $person->push($cart));
+    }
+</code></pre>
+<p>First we have a expected value, a random string:</p>
+<pre><code class="php">
+$expected = 'expected' . rand();
+</code></pre>
+<p>We just use mock builder to build a mock class</p>
+<pre><code class="php">
+$cart = $this->getMockBuilder(Cart::class)
+             ->disableOriginalConstructor()
+             ->getMock();
+</code></pre>
+<p>To mock it up by forcing return value in method 'move', add assertion with expectation the method should be called once</p>
+<pre><code class="php">
+$cart->expects($this->once())
+     ->method('move')
+     ->willReturn($expected);
+</code></pre>
+<p>Finally we assert the return value from Person::push to be the same as the expected</p>
+<pre><code>
+$this->assertSame($expected, $person->push($cart));
+</code></pre>
+`,` <!-- page 4 -->
+<p>Instead of using mocker, we can have manually built mock class which can achieve the same result, we put this mock class
+in the tests asset</p>
+<pre><code class="php">
+namespace App\Test\TestAsset;
+
+use App\Thing\Cart;
+
+class CartMock extends Cart
+{
+    protected $result;
+
+    public function setResult($result): void
+    {
+        $this->result = $result;
+    }
+
+    public function move(): string
+    {
+        return $this->result;
      }
 }
-</code></pre>       
+</code></pre>
+<p>In the CartMock, we overwrite the move method and force to return a value set by setResult method which is only in the CartMock.</p>
+<p>Here is the test:</p>
+<pre><code class="php">
+/**
+ * @group person
+ */
+public function testPushWithMock()
+{
+    $expected = 'expected' . rand();
+
+    $cart = new CartMock('bar');
+    $cart->setResult($expected);
+
+    $person = new Person('foo');
+
+    $this->assertSame($expected, $person->push($cart));
+}
+</code></pre>
+<p class="text-primary">Horay !!! It works the same way as mocker plus we will have more control in mocking up object/class. Personally I find it cleaner with the black
+    magic from Mocker.</p>
 `];

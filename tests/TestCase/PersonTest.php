@@ -14,18 +14,18 @@ class PersonTest extends TestCase
      */
     public function testPushWithMockBuilder()
     {
-        $expected = 'i am moving';
+        $expected = 'expected' . rand();
 
         $cart = $this->getMockBuilder(Cart::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+                     ->disableOriginalConstructor()
+                     ->getMock();
         $cart->expects($this->once())
              ->method('move')
              ->willReturn($expected);
 
-        $person = new Person();
+        $person = new Person('foo');
 
-        $this->assertSame($expected, $person->push($cart)); // assertEquals without type check
+        $this->assertSame($expected, $person->push($cart));
     }
 
     /**
@@ -33,12 +33,12 @@ class PersonTest extends TestCase
      */
     public function testPushWithMock()
     {
-        $expected = 'i am moving';
+        $expected = 'expected' . rand();
 
-        $cart = new CartMock('name');
+        $cart = new CartMock('bar');
         $cart->setResult($expected);
 
-        $person = new Person();
+        $person = new Person('foo');
 
         $this->assertSame($expected, $person->push($cart));
     }
