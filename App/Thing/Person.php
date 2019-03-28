@@ -5,15 +5,15 @@ namespace App\Thing;
 use App\Action\ActionInterface;
 use App\Motion\MotionInterface;
 
-class Person implements ActionInterface
+class Person extends Thing implements ActionInterface
 {
+    /** @var int */
     protected $maxStrength;
-    protected $name;
 
-    public function __construct($name, $maxStrength)
+    public function __construct(string $name, $options = [])
     {
-        $this->name = $name;
-        $this->maxStrength = $maxStrength;
+        parent::__construct($name, $options);
+        $this->maxStrength = $options['maxStrength'] ?? $options['maxStrength'];
     }
 
     /**

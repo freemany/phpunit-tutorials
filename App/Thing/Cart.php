@@ -11,13 +11,13 @@ use App\Motion\MotionInterface;
  */
 class Cart extends Thing implements MotionInterface
 {
-    protected $name;
+    /** @var int */
     protected $weight;
 
-    public function __construct(string $name, int $weight)
+    public function __construct(string $name, $options = [])
     {
-        $this->name = $name;
-        $this->weight = $weight;
+        parent::__construct($name, $options);
+        $this->weight = $options['weight'] ?? $options['weight'];
     }
 
     public function getWeight(): int
