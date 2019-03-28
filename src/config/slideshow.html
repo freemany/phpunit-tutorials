@@ -1,53 +1,51 @@
 export default [` <!-- page 1 -->
-<p>In the coming tutorials, we are going to build some php objects to simulate a situation:</p>
-<h5>A person push a Cart.</h5>
-<p>At the same time, you write test cases to test what you have just built for TDD</p>
-<p>In my opinion and what I saw, it is totally up to you to start write a test case first or later after the methods being built. It is
-completely ok and up to yuor personal taste.</p>
+<p>In this tutorial, we have a Building object which does not implement MotionInterface
+ which means it cannot move. Right, a building erects but never move in the real world.</p>
+<pre><code class="php">
+namespace App\Thing;
+
+class Building extends Thing
+{
+}
+</code></pre>
 `,
 
 
 ` <!-- page 2 -->
-<p>We going to have a Cart, why we have Cart first is because it is an object and dependent on a Person later </p>
+<p>We don't need to test this Building class as it is empty, but we would like to test what happens if Person pushes a building.
+    In the design of the push method, the Person should not move the building because the interface check as below.</p>
 <pre><code class="php">
-/**
- * Class Cart
- *
- * @package App\Thing
- */
-class Cart implements MotionInterface
+public function push(Thing $object): ?string
 {
-    protected $name;
+    <span class="bg-info">if ($object instanceof MotionInterface) {</span>
 
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
+    <span class="bg-info">return $object->move();</span>
+    <span class="bg-info">}</span>
 
-    public function move()
-    {
-        $result = $this->name . ' is moving';
-        return $result;
-    }
+    return null;
 }
 </code></pre>
-<p>Test case for the method 'move'</p>
+<p>Is it true, let the test speak.</p>
 <pre><code class="php">
-class CartTest extends TestCase
+class PersonTest extends TestCase
 {
-     public function testMove()
-     {
-         $name = 'foo';
-         $expected = $name . ' is moving';
-         $cart = new Cart($name);
+    /**
+     * @group person
+     * @group building
+     */
+    public function testPushBuildingWithNull()
+    {
+        $building = new Building('foo');
+        $person = new Person('bar');
 
-         $this->assertSame($expected, $cart->move());
-     }
+        $this->assertNull($person->push($building));
+    }
 }
-</code></pre>
-<p>Then we run:</p>
+</code></pre>`,
+`
+<p>Let run the test with a group flag that only run the test annotated by @group building</p>
 <pre><code class="bash">
-$ php vendor/bin/phpunit
+$ php vendor/bin/phpunit --group building
 PHPUnit 7.5.7 by Sebastian Bergmann and contributors.
 
 .                                                                   1 / 1 (100%)
@@ -56,47 +54,5 @@ Time: 70 ms, Memory: 4.00 MB
 
 <span class="bg-green">OK (1 test, 1 assertion)</span>
 </code></pre>
-`,
-
-
-
-` <!-- page 3 -->
-<h5>Lets have a Person class now</h5>
-<pre><code class="php">
-class PersonTest extends TestCase
-{
-     public function testPush()
-     {
-         $person = new Person();
-
-         $this->assertFalse($person->push());
-     }
-}
-</code></pre>       
-`,` <!-- page 4 -->
-<h5>Code here: 3</h5>
-<pre><code class="php">
-class PersonTest extends TestCase
-{
-     public function testPush()
-     {
-         $person = new Person();
-
-         $this->assertFalse($person->push());
-     }
-}
-</code></pre>       
-`,` <!-- page 4 -->
-<h5>Code here: 4</h5>
-<pre><code class="php">
-class PersonTest extends TestCase
-{
-     public function testPush()
-     {
-         $person = new Person();
-
-         $this->assertFalse($person->push());
-     }
-}
-</code></pre>       
+<p class="text-primary">Horay !!! It works.</p>
 `];

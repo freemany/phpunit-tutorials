@@ -46,6 +46,7 @@ class PersonTest extends TestCase
 
     /**
      * @group person
+     * @group building
      */
     public function testPushBuildingWithNull()
     {
