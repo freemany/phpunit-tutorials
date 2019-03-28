@@ -3,6 +3,7 @@
 namespace App\Test\TestCase;
 
 use App\Test\TestAsset\CartMock;
+use App\Thing\Building;
 use App\Thing\Person;
 use PHPUnit\Framework\TestCase;
 use App\Thing\Cart;
@@ -23,7 +24,7 @@ class PersonTest extends TestCase
              ->method('move')
              ->willReturn($expected);
 
-        $person = new Person();
+        $person = new Person('foo');
 
         $this->assertSame($expected, $person->push($cart)); // assertEquals without type check
     }
@@ -38,8 +39,19 @@ class PersonTest extends TestCase
         $cart = new CartMock('name');
         $cart->setResult($expected);
 
-        $person = new Person();
+        $person = new Person('foo');
 
         $this->assertSame($expected, $person->push($cart));
+    }
+
+    /**
+     * @group person
+     */
+    public function testPushBuildingWithNull()
+    {
+        $building = new Building('foo');
+        $person = new Person('bar');
+
+        $this->assertNull($person->push($building));
     }
 }
