@@ -120,4 +120,7 @@ a {
     background-color: #71dd8a;
     color: white;
 }
+.bigger-font {
+    font-size: 150%;
+}
 </style>
