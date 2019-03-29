@@ -1,192 +1,188 @@
 export default [` <!-- page 1 -->
-<p>For better scalability and sense, we updated the base class Thing</p>
+<p>We will have a new object Logger which is the injectable dependency of Person</p>
 <pre><code class="php">
-abstract class Thing
-{
-    protected $name;
-    protected $options;
+namespace App;
 
-    public function __construct(string $name, $options = [])
+class Logger
+{
+    public function log(string $message): bool
     {
-        $this->name = $name;
-        $this->options = $options;
+        error_log($message);
+
+        return true;
     }
 }
 </code></pre>
-<p>With $options as array in the constructor, it can accommodate all options in the future currently we have not thought of.</p>
-<p>We embrace the <b>O</b> in <b>SOLID</b>, "Open for extension but close for modification"</p>
 `,
 
 
 ` <!-- page 2 -->
-<p>Now we would like to simulate the world even more closely.</p>
-<p>The pusher(Person here) could somehow be unable to push the object if either the pusher is too weak or the object is too object.
-So we introduce $maxStrength for Person and $weight for Cart</p>
-<pre><code class="php">
+<p>We can inject the Logger into Person in the constructor:</p>
+<pre><code>
 class Person extends Thing implements ActionInterface
 {
     /** @var int */
     protected $maxStrength;
+    /** @var Logger */
+    protected $logger;
 
     public function __construct(string $name, $options = [])
     {
         parent::__construct($name, $options);
         $this->maxStrength = $options['maxStrength'] ?? $options['maxStrength'];
+        $this->logger = $options['logger'] ?? $options['logger'];
     }
-// ...
-</code></pre>
-<p>$weight for Cart:</p>
-<pre><code class="php">
-class Cart extends Thing implements MotionInterface
-{
-    /** @var int */
-    protected $weight;
-
-    public function __construct(string $name, $options = [])
-    {
-        parent::__construct($name, $options);
-        $this->weight = $options['weight'] ?? $options['weight'];
-    }
-
-    public function getWeight(): int
-    {
-        return $this->weight;
-    }
-// ...
+// ..
 </code></pre>
 `,
 
 
-
 ` <!-- page 3 -->
-<p>We introduce a new method to determine if the object is pushable. If Person $maxStrength is larger than Cart $weight, the Cart can move</p>
+<p>But demo purpose, we choose another way to inject with getter/setter pattern.</p>
 <pre><code class="php">
     /**
-     * @param Thing $object
-     *
-     * @return null|string
+     * @return Logger
      */
-    public function push(Thing $object): ?string
+    protected function getLogger(): Logger
     {
-        if ($object instanceof MotionInterface) {
-
-            if (false === $this->checkPushable($object)) { // Here is the check we introduced
-                return null;
-            }
-
-            return $object->move();
+        if (null === $this->logger) {
+            $this->logger = new Logger();
         }
-
-        return null;
+        return $this->logger;
     }
-
-    /**
-     * @param MotionInterface $object
-     *
-     * @return bool
-     */
-    protected function checkPushable(MotionInterface $object): bool
-    {
-        $weight = $object->getWeight();
-
-        if ($this->maxStrength < $weight) { // If the weight is larger than the strength
-            return false;
-        }
-
-        return true;
-    }
-</code></pre>       
-`,` <!-- page 4 -->
-<h5>Code here: 3</h5>
+</code></pre>
+<p>Accordingly we will have a setter in the PersonMock if we don't have setter in Person</p>
 <pre><code class="php">
-class PersonTest extends TestCase
+class PersonMock extends Person
 {
-     public function testPush()
-     {
-         $person = new Person();
-
-         $this->assertFalse($person->push());
-     }
-}
-</code></pre>       
-`,` <!-- page 5 -->
-<p>In order to run a test case with a series of data, let's use data provider from PhpUnit.</p>
-<p>We start our tests with Mocker Builder first</p>
-<pre><code class="php">
-   /**
-     * @group person
-     * @dataProvider      pushTestDataProvider // That is the name of the data provider method
-     * @param string      $moveResponse
-     * @param int         $carWeight
-     * @param int         $personStrength
-     * @param null|string $expected
-     */
-    public function testPushWithMockBuilder(string $moveResponse, int $carWeight, int $personStrength, ?string $expected)
+    public function setLogger(Logger $logger)
     {
+        $this->logger = $logger;
+
+        return $this;
+    }
+}
+</code></pre>
+`,
+
+
+` <!-- page 4 -->
+<p>Logger is dependency and we presume it has been tested previously. So what we need here for Person is to test if the Logger::log
+gets called expected</p>
+<p>Here are the tests in PersonTest:</p>
+<pre><code class="php">
+    /**
+     * @group logger
+     * @group person
+     */
+    public function testLoggerIsCalled()
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+                       ->disableOriginalConstructor()
+                       ->getMock();
+
+        $logger->expects($this->once())->method('log'); // assert if it is called once
+
         $cart = $this->getMockBuilder(Cart::class)
                      ->disableOriginalConstructor()
                      ->getMock();
-        $cart->expects($this->any())
-             ->method('move')
-             ->willReturn($moveResponse);
-        $cart->expects($this->any())
-            ->method('getWeight')
-            ->willReturn($carWeight);
 
-        $person = new Person('foo', ['maxStrength' => $personStrength]);
+        $cart->method('getWeight')->willReturn(1);
 
-        $this->assertSame($expected, $person->push($cart));
+        $person = new PersonMock('foo', ['maxStrength' => 2]);
+        $person->setLogger($logger);
+        $person->push($cart);
     }
 </code></pre>
-<p>Here is the data provider method to feed data.</p>
+<p>If the cart is not moving, it should not be called.</p>
 <pre><code class="php">
-   /**
+    /**
+     * @group logger
+     * @group person
+     */
+    public function testLoggerIsNotCalled()
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $logger->expects($this->never())   // Never called
+               ->method('log');
+
+        $cart = $this->getMockBuilder(Cart::class)
+                     ->disableOriginalConstructor()
+                     ->getMock();
+
+        $cart->method('getWeight')->willReturn(2);
+
+        $person = new PersonMock('foo', ['maxStrength' => 1]);
+        $person->setLogger($logger);
+        $person->push($cart);
+    }
+</code></pre>
+`,
+`<!-- page 5 -->
+<p>For demo purpose, we test with PersonMock instead of mock builder and data provider</p>
+<pre><code class="php">
+  /**
+     * @group        logger
+     * @group        person
+     * @dataProvider loggerDataProvider
+     *
+     * @param int    $weight
+     * @param int    $maxStrength
+     * @param string $expected
+     */
+    public function testLoggerIsCalledWithMock(int $weight, int $maxStrength, string $expected)
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        switch ($expected) {
+            case 'once':
+                $logger->expects($this->once())->method('log'); // Once
+                break;
+            case 'never':
+            default:
+                $logger->expects($this->never())->method('log'); // Never
+                break;
+        }
+
+        $cart = new CartMock('foo', ['weight' => $weight]);
+        $cart->setResult('dummy_result');
+        $person = new PersonMock('bar', ['maxStrength' => $maxStrength]);
+        $person->setLogger($logger);
+        $person->push($cart);
+    }
+
+    /**
      * @return array
      */
-    public function pushTestDataProvider()
+    public function loggerDataProvider(): array
     {
         return [
-            ['moving', 1, 2, 'moving'], // Person::maxStrength(2) > Cart::weight(1)
-            ['moving', 1, 1, 'moving'], // Person::maxStrength(1) = Cart::weight(1)
-            ['moving', 2, 1, null],     // Person::maxStrength(1) < Cart::weight(2) => null(not moving)
+            [1, 2, 'once'],
+            [2, 1, 'never'],
         ];
     }
 </code></pre>
-`,` <!-- page 6 -->
-<p>For demo purpose, we make the same test case with our mock objects</p>
-<pre><code class="php">
-   /**
-     * @group person
-     * @dataProvider      pushTestDataProvider // Cool! we can use the same data provider
-     * @param string      $moveResponse
-     * @param int         $carWeight
-     * @param int         $personStrength
-     * @param null|string $expected
-     */
-    public function testPushWithMock(string $moveResponse, int $carWeight, int $personStrength, ?string $expected)
-    {
-        $cart = new CartMock('foo', ['weight' => $carWeight]);
-        $cart->setResult($moveResponse);
+`,
 
-        $person = new Person('bar', ['maxStrength' => $personStrength]);
-
-        $this->assertSame($expected, $person->push($cart));
-    }
-</code></pre>
-`,` <!-- page 7 -->
-<p>Run the tests:</p>
-<pre><code class="php">
-$ php vendor/bin/phpunit
+` <!-- page 6 -->
+<p>Run all tests grouped by logger:</p>
+<pre><code class="bash">
+$ vendor/bin/phpunit --group logger
 PHPUnit 7.5.7 by Sebastian Bergmann and contributors.
 
-.......                                                             7 / 7 (100%)
+....                                                                4 / 4 (100%)
 
-Time: 91 ms, Memory: 4.00 MB
-
-<span class="bg-green">OK (7 tests, 7 assertions)</span>
+Time: 29 ms, Memory: 4.00 MB
+<span class="bg-green">OK (4 tests, 4 assertions)</span>
 </code></pre>
-<p class="text-primary">It is time to git-checkout to tutorial-3</p>
+<h3 class="text-primary">Horay !!! More tutorial about PhpUnit ideas are coming ...</h3>
+<h3 class="text-primary">To be continued... </h3>
+<p>If you have something for sharing, you can create your onw tutorials with this template.
+Just simply git-checkout to create-your-own-tutorial and follow the instruction. Have fun !!!</p>
 <pre><code class="bash">
-$ git checkout tutorial-3
+$ git checkout create-your-own-tutorial
 </code></pre>
 `];
