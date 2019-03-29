@@ -1,7 +1,7 @@
 # PhpUnit Tutorial/Workshop (phpunit-tutorials)
 
-###Self phased tutorials/workshop with easy-to-create tutorial framework.
-###All about idea, demo, examples, experiments with phpunit.
+### Self phased tutorials/workshop with easy-to-create tutorial framework.
+### All about idea, demo, examples, experiments with phpunit.
 
 ## Project setup
 ```
@@ -19,4 +19,4 @@ npm run serve
 vendor/bin/phpunit
 ```
 
-##Have fun!!!
+## Have fun!!!
