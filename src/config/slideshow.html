@@ -1,22 +1,28 @@
-export default [`
-<h4>Set up first</h4>
-<h5>Install npm dependencies and phpunit:</h5>
+export default [
+`<!--page 1-->
+<h5>Step 1</h5>
+<p>Go to src/config/config.js:</p>
 <pre><code class="bash">
-$ npm i
-$ php composer.phar install
+$ cd src/config
+$ vim config.js
 </code></pre>
-<p>Once they are installed, you should be able to run the first test</p>
+<p>Start editing the file:</p>
 <pre><code class="bash">
-$ vendor/bin/phpunit
+export default {
+    store_key: 'phpunit-master',
+}
 </code></pre>
-`,`
-<p>Here are the sameple tests:</p>
+<p>Update the store_key to an value you like, store_key is the key to store your last page in the browser local storage.</p>
+<h5>Step 2</h5>
+<p>Go to src/components/SlideShow.vue to update the title on line 4.</p>
+<p>Go to src/config/slideshow.html to create slides with something you like to share.</p>
+<pre><code class="bash">
+$ vim slideshow.html
+</code></pre>
+`,
+`<!--page 2-->
+<h5>Step 4: Have fun!!!</h5>
 <pre><code class="php">
-namespace App\\Test\\TestCase;
-
-use PHPUnit\\Framework\\TestCase;
-
-/**
  * Class SampleTest
  *
  * @package App\Test\TestCase
@@ -32,56 +38,11 @@ class SampleTest extends TestCase
     {
         $message = 'exception message' . rand();
 
-        $this->expectException(\\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($message);
 
-        throw new \\InvalidArgumentException($message);
+        throw new \InvalidArgumentException($message);
     }
 }
-</code></pre>
-<p>You will see the test result:</p>
-<pre><code class="bash">
-$ vendor/bin/phpunit
-PHPUnit 7.5.7 by Sebastian Bergmann and contributors.
-
-..                                                                  2 / 2 (100%)
-
-Time: 23 ms, Memory: 4.00 MB
-
-<span class="bg-green">OK (2 tests, 3 assertions)</span>
-</code></pre>
-`,`
-<h4>Testable testable and testable</h4>
-<p>The most important element for unit test is to have a testable code first, without testable, there is no way or no point to test because it will
-involves too much resources for the no-ready-for-test/none-testable codes. In order to write testable codes, in PHP we have to embrace the OOP patterns which sticks
-to the SOLID principal</p>
-<p>"In object-oriented computer programming, SOLID is a mnemonic acronym for five design principles intended to make software designs more understandable, flexible and maintainable..."  <a href="https://en.wikipedia.org/wiki/SOLID" target="_blank">-- by Wikipedia</a></p> 
-<ul>
-<li>Single responsibility principle:<br/>
-A class should have only a single responsibility, that is, only changes to one part of the software's specification should be able to affect the specification of the class.</li>
-<li>Open–closed principle:<br/>
-"Software entities ... should be open for extension, but closed for modification."</li>
-<li>Liskov substitution principle:<br/>
-"Objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program." See also design by contract.</li>
-<li>Interface segregation principle:<br/>
-"Many client-specific interfaces are better than one general-purpose interface."</li>
-<li>Dependency inversion principle: <br/>
-One should "depend upon abstractions, [not] concretions."</li>
-</ul>
-`,`
-<p>Let's make the idea simple:</p>
-<h3>How to test ???</h3>
-<h3 class="text-primary">Write Testable Code, testable <span class="bigger-font">Testable</span> !!!</h3>
-<h3>How to make code Testable ???</h3>
-<h3 class="text-primary">Apply/use Patterns to your code, patterns <span class="bigger-font">Patterns</span> !!!</h3>
-<h3>What patterns should I use ???</h3>
-<h3 class="text-primary"><span class="bigger-font">OOP</span> or <span class="bigger-font">FP</span>(Functional Programming)</h3>
-<h3>We are PHP, so how to do OOP</h3>
-<h3 class="text-primary">Stick to SOLID principals, SOLID, <span class="bigger-font">SOLID</span></h3>
-`,`
-<p>The 'Single responsibility principle' aka 'Separation of Concern' is the most fundamental principal for your DRY( Don't Repeat Yourself ) code</p>
-<p>Lets <b>git-checkout to 'tutorial-1'</b> and start writing our first code and test. Have fun with TDD !!!</p>
-<pre><code class="bash">
-$ git checkout tutorial-1
 </code></pre>
 `];
