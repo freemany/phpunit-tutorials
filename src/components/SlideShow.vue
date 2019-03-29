@@ -88,7 +88,7 @@ export default {
 <style>
 .jumbotron {
   text-align: left;
-  height: 500px;
+  height: 600px;
   overflow-y: scroll;
 }
 ul {
