@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <h5>Tutorial 2</h5>
+      <h5>Tutorial 3</h5>
         <div :class="'jumbotron p-3 p-md-5 rounded ol-md-6 px-0 ' + (fadeInAction ? 'fade-in' : '')" v-html="content" ref="slideContent">
       </div>
     </div>
